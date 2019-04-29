@@ -55,6 +55,13 @@ private:
 	Shader shaderSkybox;
 	Shader shaderReflection;
 
+	void setUniform(Shader currentShader, const char *name, float x, float y, float z);
+	void setUniform(Shader currentShader, const char *name, const glm::vec3 & v);
+	void setUniform(Shader currentShader, const char *name, const glm::mat4 & m);
+	void setUniform(Shader currentShader, const char *name, const glm::mat3 & m);
+	void setUniform(Shader currentShader, const char *name, float val);
+	void setUniform(Shader currentShader, const char *name, int val);
+
 	glm::mat4 modelView;
 
 	Camera myCamera;

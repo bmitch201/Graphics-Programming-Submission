@@ -16,6 +16,9 @@ public:
 	void Bind(); //Set gpu to use our shaders
 	void Update(const Transform& transform, const Camera& camera);
 	void init(const std::string& vertFile, const std::string& fragFile);
+	//New
+	void init(const std::string& vertFile, const std::string& fragFile, const std::string& geomFile);
+
 	GLuint getProgram() { return program; }
 
 	std::string LoadShader(const std::string& fileName);
@@ -51,11 +54,11 @@ public:
 	{
 		glUniform1f(glGetUniformLocation(program, name.c_str()), value);
 
-		if ((glGetUniformLocation(program, name.c_str()) == -1))
-		{
-			std::cerr << "Unable to load shader: " << name.c_str() << std::endl;
-			__debugbreak();
-		}
+		//if ((glGetUniformLocation(program, name.c_str()) == -1))
+		//{
+		//	std::cerr << "Unable to load shader: " << name.c_str() << std::endl;
+		//	__debugbreak();
+		//}
 	}
 	// ------------------------------------------------------------------------
 	void setVec2(const std::string &name, const glm::vec2 &value) const
@@ -147,11 +150,11 @@ public:
 	{
 		glUniformMatrix4fv(glGetUniformLocation(program, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 
-		if ((glGetUniformLocation(program, name.c_str()) == -1))
-		{
-			std::cerr << "Unable to load shader: " << name.c_str() << std::endl;
-			__debugbreak();
-		}
+		//if ((glGetUniformLocation(program, name.c_str()) == -1))
+		//{
+		//	std::cerr << "Unable to load shader: " << name.c_str() << std::endl;
+		//	__debugbreak();
+		//}
 	}
 
 
@@ -160,7 +163,7 @@ public:
 
 protected:
 private:
-	static const unsigned int NUM_SHADERS = 2; // number of shaders
+	static const unsigned int NUM_SHADERS = 3; // number of shaders
 
 	enum
 	{

@@ -94,5 +94,14 @@
     <None Include="..\res\shaderSkybox.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\res\shaderGeoText.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\res\shaderGeoText.geom">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\res\shaderGeoText.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

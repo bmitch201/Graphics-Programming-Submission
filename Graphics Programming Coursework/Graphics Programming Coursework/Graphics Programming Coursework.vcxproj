@@ -149,6 +149,9 @@
     <ClInclude Include="transform.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\res\shaderGeoText.frag" />
+    <None Include="..\res\shaderGeoText.geom" />
+    <None Include="..\res\shaderGeoText.vert" />
     <None Include="..\res\shaderReflection.frag" />
     <None Include="..\res\shaderReflection.vert" />
     <None Include="..\res\shaderSkybox.frag" />

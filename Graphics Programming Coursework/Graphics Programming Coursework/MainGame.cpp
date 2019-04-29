@@ -18,9 +18,9 @@ MainGame::MainGame()
 	Texture* texture1(); //load texture
 	Overlay* overlay(); //load texture
 	Shader* shaderPass();
-	Shader* shaderBlur();
-	Shader* shaderToon();
-	Shader* shaderRim();
+	//Shader* shaderBlur();
+	//Shader* shaderToon();
+	//Shader* shaderRim();
 }
 
 MainGame::~MainGame() 
@@ -41,19 +41,7 @@ void MainGame::initSystems()
 	texture.init("..\\res\\bricks.jpg"); //load texture
 	texture1.init("..\\res\\water.jpg"); //load texture
 
-
 	shaderSkybox.init("..\\res\\shaderSkybox.vert", "..\\res\\shaderSkybox.frag");
-
-	shaderPass.init("..\\res\\shaderRim.vert","..\\res\\shaderRim.frag");
-	shaderBlur.init("..\\res\\shaderBlur.vert", "..\\res\\shaderBlur.frag");
-	shaderToon.init("..\\res\\shaderToon.vert", "..\\res\\shaderToon.frag");
-	shaderRim.init("..\\res\\shaderRim.vert", "..\\res\\shaderRim.frag");
-	shaderReflection.init("..\\res\\shaderReflection.vert", "..\\res\\shaderReflection.frag");
-
-	//Vertex2D vertices[] = { Vertex2D(glm::vec2(-0.5, 1.0), glm::vec2(0.0, 0.0)),
-	//						Vertex2D(glm::vec2(0.5, 0.5), glm::vec2(1.0, 0.0)),
-	//						Vertex2D(glm::vec2(0.5,-0.5), glm::vec2(1.0, 1.0)),
-	//						Vertex2D(glm::vec2(-0.5,-0.5), glm::vec2(0.0, 1.0)) };
 
 	overlay.init("..\\res\\bricks.jpg");
 
@@ -163,9 +151,9 @@ void MainGame::Skybox()
 	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 	shaderSkybox.Bind();
 	shaderSkybox.setInt("skybox", 0);
-	//view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
 	shaderSkybox.setMat4("view", myCamera.GetView());
 	shaderSkybox.setMat4("projection", myCamera.GetProjection());
+
 	// skybox cube
 	glBindVertexArray(skyboxVAO);
 	glActiveTexture(GL_TEXTURE0);
@@ -175,27 +163,12 @@ void MainGame::Skybox()
 	glDepthFunc(GL_LESS); // set depth function back to default
 }
 
-void MainGame::setReflectionShader()
-{
-	shaderReflection.setMat4("model", transform.GetModel());
-	shaderReflection.setMat4("view", myCamera.GetView());
-	shaderReflection.setMat4("projection", myCamera.GetProjection());
-
-	shaderReflection.setVec3("cameraPos", (myCamera.getPos()));
-}
-
 void MainGame::playAudio(unsigned int Source, glm::vec3 pos)
 {
 	
 	ALint state; 
 	alGetSourcei(Source, AL_SOURCE_STATE, &state);
-	/*
-	Possible values of state
-	AL_INITIAL
-	AL_STOPPED
-	AL_PLAYING
-	AL_PAUSED
-	*/
+
 	if (AL_PLAYING != state)
 	{
 		//audioDevice.playSound(Source, pos);
@@ -223,15 +196,24 @@ void MainGame::setADSLighting()
 	shaderPass.setFloat("Shininess", 0.5);
 }
 
-void MainGame::setToonLighting()
+void MainGame::setUniform(Shader currentShader, const char * name, const glm::mat4 & m)
 {
-	shaderToon.setVec3("lightDir", glm::vec3(0.5, 0.5, 0.5));
+	currentShader.setMat4(name, m);
 }
 
-void MainGame::setRimShader()
+void MainGame::setUniform(Shader currentShader, const char * name, float val)
 {
-	shaderRim.setMat4("u_vm", myCamera.GetView());
-	shaderRim.setMat4("u_pm", myCamera.GetProjection());
+	currentShader.setFloat(name, val);
+}
+
+void MainGame::setUniform(Shader currentShader, const char *name, const glm::vec3 & v)
+{
+	currentShader.setVec3(name, v);
+}
+
+void MainGame::setUniform(Shader currentShader, const char *name, int val)
+{
+	currentShader.setInt(name, val);
 }
 
 void MainGame::blobEffect()
@@ -285,38 +267,54 @@ void MainGame::drawGame()
 
 	Skybox();
 
+	//Sets positon of Mesh 1
 	transform.SetPos(glm::vec3(sinf(counter), 0.5, 0.0));
 	transform.SetRot(glm::vec3(0.0, counter * 5, 0.0));
 	transform.SetScale(glm::vec3(0.6, 0.6, 0.6));
-	
-	//shaderRim.Bind();
-	//setRimShader();
-	//shaderRim.Update(transform, myCamera);
 
-	shaderReflection.Bind();
-	setReflectionShader();
+	shaderPass.init("..\\res\\shaderReflection.vert", "..\\res\\shaderReflection.frag");
 
-	texture.Bind(0);
+	shaderPass.Bind();
+
+	setUniform(shaderPass, "model", transform.GetModel());
+	setUniform(shaderPass, "view", myCamera.GetView());
+	setUniform(shaderPass, "projection", myCamera.GetProjection());
+	setUniform(shaderPass, "cameraPos", (myCamera.getPos()));
+
 	mesh1.draw();
 
 	transform.SetPos(glm::vec3(-sinf(counter), -1.0, -sinf(counter)*5));
 	transform.SetRot(glm::vec3(0.0, counter * 5, 0.0));
 	transform.SetScale(glm::vec3(0.6, 0.6, 0.6));
+
+	shaderPass.init("..\\res\\shaderRim.vert", "..\\res\\shaderRim.frag");	
 	
-	shaderRim.Bind();
-	setRimShader();
-	shaderRim.Update(transform, myCamera);
+	shaderPass.Bind();
+	
+	setUniform(shaderPass, "u_vm", myCamera.GetView());
+	setUniform(shaderPass, "u_pm", myCamera.GetProjection());
+
+	shaderPass.Update(transform, myCamera);
 
 	mesh2.draw();
-
 
 	transform.SetPos(glm::vec3(-sinf(counter), -sinf(counter), -sinf(counter)));
 	transform.SetRot(glm::vec3(0.0, counter * 5, 0.0));
 	transform.SetScale(glm::vec3(0.6, 0.6, 0.6));
 
-	shaderToon.Bind();
-	setToonLighting();
-	shaderToon.Update(transform, myCamera);
+	shaderPass.init("..\\res\\shaderGeoText.vert", "..\\res\\shaderGeoText.frag", "..\\res\\shaderGeoText.geom");
+
+	shaderPass.Bind();
+	texture.Bind(1);
+
+	setUniform(shaderPass, "time", 2.0f * counter);
+	setUniform(shaderPass, "transform", transform.GetModel());
+	//setUniform(shaderPass, "randColourX", sinf(counter));
+	//setUniform(shaderPass, "randColourY", 1.0f / sinf(counter));
+	//setUniform(shaderPass, "randColourZ", sinf(counter) * sinf(counter));
+	setUniform(shaderPass, "tex", texture.getTexHandler());
+
+	shaderPass.Update(transform, myCamera);
 
 	mesh3.draw();
 
