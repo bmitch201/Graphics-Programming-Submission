@@ -27,10 +27,6 @@ private:
 	void drawGame();
 	void playAudio(unsigned int Source, glm::vec3 pos);
 	void blobEffect();
-	void setADSLighting();
-	void setToonLighting();
-	void setRimShader();
-	void setReflectionShader();
 
 	void Skybox();
 
@@ -49,11 +45,7 @@ private:
 
 	Overlay overlay;
 	Shader shaderPass;
-	Shader shaderBlur;
-	Shader shaderToon;
-	Shader shaderRim;
 	Shader shaderSkybox;
-	Shader shaderReflection;
 
 	void setUniform(Shader currentShader, const char *name, float x, float y, float z);
 	void setUniform(Shader currentShader, const char *name, const glm::vec3 & v);

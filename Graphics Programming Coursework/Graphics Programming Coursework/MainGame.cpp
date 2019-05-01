@@ -18,9 +18,6 @@ MainGame::MainGame()
 	Texture* texture1(); //load texture
 	Overlay* overlay(); //load texture
 	Shader* shaderPass();
-	//Shader* shaderBlur();
-	//Shader* shaderToon();
-	//Shader* shaderRim();
 }
 
 MainGame::~MainGame() 
@@ -43,8 +40,8 @@ void MainGame::initSystems()
 
 	shaderSkybox.init("..\\res\\shaderSkybox.vert", "..\\res\\shaderSkybox.frag");
 
-	mesh1.loadModel("..\\res\\Sword.obj");
-	mesh2.loadModel("..\\res\\Bowl.obj");
+	mesh1.loadModel("..\\res\\Hexagon.obj");
+	mesh2.loadModel("..\\res\\pokeball.obj");
 	mesh3.loadModel("..\\res\\plate.obj");
 	
 	myCamera.initCamera(glm::vec3(0, 0, -10.0), 70.0f, (float)_gameDisplay.getWidth()/_gameDisplay.getHeight(), 0.01f, 1000.0f);
@@ -139,6 +136,26 @@ void MainGame::processInput()
 			case SDL_QUIT:
 				_gameState = GameState::EXIT;
 				break;
+
+			case SDL_KEYDOWN:
+				switch (evnt.key.keysym.sym)
+				{
+				case SDLK_a://If key 'a' down
+					myCamera.MoveRight(1);
+					break;
+
+				case SDLK_d://If key 'd' down
+					myCamera.MoveRight(-1);
+					break;
+
+				case SDLK_w://If key 'w' down
+					myCamera.MoveForward(1);
+					break;
+
+				case SDLK_s://If key 's' down
+					myCamera.MoveForward(-1);
+					break;
+				}
 		}
 	}
 	
@@ -173,31 +190,15 @@ void MainGame::playAudio(unsigned int Source, glm::vec3 pos)
 	}
 }
 
-void MainGame::setADSLighting()
-{
-	modelView = transform.GetModel() * myCamera.GetView();
-	
-	shaderPass.setMat4("ModelViewMatrix", modelView);
-	shaderPass.setMat4("ProjectionMatrix", myCamera.GetProjection()); 
-	
-	glm::mat4 normalMatrix = transpose(inverse(modelView));
-	
-	shaderPass.setMat4("NormalMatrix", normalMatrix);
-
-	shaderPass.setVec4("Position", glm::vec4(10.0,10.0,10.0,1.0));
-	shaderPass.setVec3("Intensity", glm::vec3(0.0, 0.0, 0.0));
-
-	shaderPass.setVec3("ka", glm::vec3(0.5, 0.5, 0.5));
-	shaderPass.setVec3("kd", glm::vec3(0.5, 0.5, 0.5));
-	shaderPass.setVec3("ks", glm::vec3(0.5, 0.5, 0.5));
-
-	shaderPass.setFloat("Shininess", 0.5);
-}
-
 void MainGame::setUniform(Shader currentShader, const char * name, const glm::mat4 & m)
 {
 	currentShader.setMat4(name, m);
 }
+void MainGame::setUniform(Shader currentShader, const char * name, const glm::mat3 & m)
+{
+	currentShader.setMat3(name, m);
+}
+
 
 void MainGame::setUniform(Shader currentShader, const char * name, float val)
 {
@@ -214,51 +215,6 @@ void MainGame::setUniform(Shader currentShader, const char *name, int val)
 	currentShader.setInt(name, val);
 }
 
-void MainGame::blobEffect()
-{
-	GLuint blockIndex = glGetUniformBlockIndex(shaderBlur.getProgram(), "BlobSettings");
-
-	GLint blockSize;
-	glGetActiveUniformBlockiv(shaderBlur.getProgram(), blockIndex,
-		GL_UNIFORM_BLOCK_DATA_SIZE, &blockSize); //get information about blobsettings and save it in blockSize
-
-	GLubyte * blockBuffer = (GLubyte *)malloc(blockSize); //allocates the requested memory and returns a pointer to it.
-
-														  // Query for the offsets of each block variable
-	const GLchar *names[] = { "InnerColor", "OuterColor",
-		"RadiusInner", "RadiusOuter" };
-
-	GLuint indices[4];
-	glGetUniformIndices(shaderBlur.getProgram(), 4, names, indices); // glGetUniformIndices retrieves the indices of a number of uniforms within program
-
-	GLint offset[4];
-	glGetActiveUniformsiv(shaderBlur.getProgram(), 4, indices, GL_UNIFORM_OFFSET, offset); //Returns information about several active uniform variables for the specified program object
-
-	GLfloat outerColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	GLfloat innerColor[] = { 1.0f, 1.0f, 0.75f, 1.0f };
-
-	GLfloat innerRadius = 0.0f, outerRadius = 3.0f;
-
-	memcpy(blockBuffer + offset[0], innerColor,
-		4 * sizeof(GLfloat)); //destination, source, no of bytes. 
-	memcpy(blockBuffer + offset[1], outerColor,
-		4 * sizeof(GLfloat));
-	memcpy(blockBuffer + offset[2], &innerRadius,
-		sizeof(GLfloat));
-	memcpy(blockBuffer + offset[3], &outerRadius,
-		sizeof(GLfloat));
-
-	GLuint uboHandle;
-
-	glGenBuffers(1, &uboHandle);
-
-	glBindBuffer(GL_UNIFORM_BUFFER, uboHandle);
-	glBufferData(GL_UNIFORM_BUFFER, blockSize, blockBuffer,
-		GL_DYNAMIC_DRAW); //creates and initializes a buffer object's data store - targer, size, data, usage
-
-	glBindBufferBase(GL_UNIFORM_BUFFER, blockIndex, uboHandle); // bind a buffer object to an indexed buffer target - trager, index, buffer
-}
-
 void MainGame::drawGame()
 {
 	_gameDisplay.clearDisplay(0.0f, 0.0f, 0.0f, 1.0f);
@@ -268,7 +224,7 @@ void MainGame::drawGame()
 	//Sets positon of Mesh 1
 	transform.SetPos(glm::vec3(sinf(counter), 0.5, 0.0));
 	transform.SetRot(glm::vec3(1.0, counter * 5, 0.0));
-	transform.SetScale(glm::vec3(0.1, 0.1, 0.1));
+	transform.SetScale(glm::vec3(0.05, 0.05, 0.05));
 
 	shaderPass.init("..\\res\\shaderReflection.vert", "..\\res\\shaderReflection.frag");
 	shaderPass.Bind();
@@ -278,26 +234,28 @@ void MainGame::drawGame()
 	setUniform(shaderPass, "projection", myCamera.GetProjection());
 	setUniform(shaderPass, "cameraPos", (myCamera.getPos()));
 
+	shaderPass.Update(transform, myCamera);
+
 	mesh1.draw();
 
-	transform.SetPos(glm::vec3(-sinf(counter), -1.0, -sinf(counter)*5));
-	transform.SetRot(glm::vec3(1.0, counter * 5, 0.0));
-	transform.SetScale(glm::vec3(0.01, 0.01, 0.01));
+	transform.SetPos(glm::vec3(-sinf(counter), -2.0, 0.5));
+	transform.SetRot(glm::vec3(counter, counter * 5, counter * 2));
+	transform.SetScale(glm::vec3(0.005, 0.005, 0.005));
 
-	texture.init("..\\res\\china.jpg"); //load texture
-	texture.Bind(0);
-
-	shaderPass.init("..\\res\\shaderRim.vert", "..\\res\\shaderRim.frag");		
+	shaderPass.init("..\\res\\shaderGooch.vert", "..\\res\\shaderGooch.frag");		
 	shaderPass.Bind();
 	
-	setUniform(shaderPass, "u_vm", myCamera.GetView());
-	setUniform(shaderPass, "u_pm", myCamera.GetProjection());
+	setUniform(shaderPass, "Model", transform.GetModel());
+	setUniform(shaderPass, "Projection", myCamera.GetProjection());
+	setUniform(shaderPass, "ModelViewMatrix", myCamera.GetView() * transform.GetModel());
+	setUniform(shaderPass, "NormalMatrix", glm::mat3(glm::transpose(glm::inverse(transform.GetModel()))));
+	setUniform(shaderPass, "lightPos", myCamera.getPos());
 
 	shaderPass.Update(transform, myCamera);
 
 	mesh2.draw();
 
-	transform.SetPos(glm::vec3(-sinf(counter), -sinf(counter), -sinf(counter)));
+	transform.SetPos(glm::vec3(2.0, -sinf(counter), -sinf(counter)));
 	transform.SetRot(glm::vec3(1.0, counter * 5, 0.0));
 	transform.SetScale(glm::vec3(0.01, 0.01, 0.01));
 

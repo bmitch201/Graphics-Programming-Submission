@@ -103,5 +103,11 @@
     <None Include="..\res\shaderGeoText.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\res\shaderGooch.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\res\shaderGooch.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

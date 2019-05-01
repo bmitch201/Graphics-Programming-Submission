@@ -38,15 +38,15 @@ public:
 		return projection * glm::lookAt(pos, pos + forward, up);
 	}
 
-	//void MoveForward(float amt)
-	//{
-	//	pos += forward * amt;
-	//}
+	void MoveForward(float amt)
+	{
+		pos += forward * amt;
+	}
 
-	//void MoveRight(float amt)
-	//{
-	//	pos += glm::cross(up, forward) * amt;
-	//}
+	void MoveRight(float amt)
+	{
+		pos += glm::cross(up, forward) * amt;
+	}
 
 	//void Pitch(float angle)
 	//{
