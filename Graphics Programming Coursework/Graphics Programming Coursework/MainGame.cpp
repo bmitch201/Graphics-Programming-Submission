@@ -36,18 +36,16 @@ void MainGame::run()
 void MainGame::initSystems()
 {
 	_gameDisplay.initDisplay(); 
-	whistle = audioDevice.loadSound("..\\res\\bang.wav");
-	backGroundMusic = audioDevice.loadSound("..\\res\\background.wav");
-	texture.init("..\\res\\bricks.jpg"); //load texture
-	texture1.init("..\\res\\water.jpg"); //load texture
+	//whistle = audioDevice.loadSound("..\\res\\bang.wav");
+	//backGroundMusic = audioDevice.loadSound("..\\res\\background.wav");
+	//texture.init("..\\res\\bricks.jpg"); //load texture
+	//texture.init("..\\res\\water.jpg"); //load texture
 
 	shaderSkybox.init("..\\res\\shaderSkybox.vert", "..\\res\\shaderSkybox.frag");
 
-	overlay.init("..\\res\\bricks.jpg");
-
-	mesh1.loadModel("..\\res\\monkey3.obj");
-	mesh2.loadModel("..\\res\\monkey3.obj");
-	mesh3.loadModel("..\\res\\monkey3.obj");
+	mesh1.loadModel("..\\res\\Sword.obj");
+	mesh2.loadModel("..\\res\\Bowl.obj");
+	mesh3.loadModel("..\\res\\plate.obj");
 	
 	myCamera.initCamera(glm::vec3(0, 0, -10.0), 70.0f, (float)_gameDisplay.getWidth()/_gameDisplay.getHeight(), 0.01f, 1000.0f);
 
@@ -269,11 +267,10 @@ void MainGame::drawGame()
 
 	//Sets positon of Mesh 1
 	transform.SetPos(glm::vec3(sinf(counter), 0.5, 0.0));
-	transform.SetRot(glm::vec3(0.0, counter * 5, 0.0));
-	transform.SetScale(glm::vec3(0.6, 0.6, 0.6));
+	transform.SetRot(glm::vec3(1.0, counter * 5, 0.0));
+	transform.SetScale(glm::vec3(0.1, 0.1, 0.1));
 
 	shaderPass.init("..\\res\\shaderReflection.vert", "..\\res\\shaderReflection.frag");
-
 	shaderPass.Bind();
 
 	setUniform(shaderPass, "model", transform.GetModel());
@@ -284,11 +281,13 @@ void MainGame::drawGame()
 	mesh1.draw();
 
 	transform.SetPos(glm::vec3(-sinf(counter), -1.0, -sinf(counter)*5));
-	transform.SetRot(glm::vec3(0.0, counter * 5, 0.0));
-	transform.SetScale(glm::vec3(0.6, 0.6, 0.6));
+	transform.SetRot(glm::vec3(1.0, counter * 5, 0.0));
+	transform.SetScale(glm::vec3(0.01, 0.01, 0.01));
 
-	shaderPass.init("..\\res\\shaderRim.vert", "..\\res\\shaderRim.frag");	
-	
+	texture.init("..\\res\\china.jpg"); //load texture
+	texture.Bind(0);
+
+	shaderPass.init("..\\res\\shaderRim.vert", "..\\res\\shaderRim.frag");		
 	shaderPass.Bind();
 	
 	setUniform(shaderPass, "u_vm", myCamera.GetView());
@@ -299,20 +298,17 @@ void MainGame::drawGame()
 	mesh2.draw();
 
 	transform.SetPos(glm::vec3(-sinf(counter), -sinf(counter), -sinf(counter)));
-	transform.SetRot(glm::vec3(0.0, counter * 5, 0.0));
-	transform.SetScale(glm::vec3(0.6, 0.6, 0.6));
+	transform.SetRot(glm::vec3(1.0, counter * 5, 0.0));
+	transform.SetScale(glm::vec3(0.01, 0.01, 0.01));
 
+	texture.init("..\\res\\iron.jpg"); //load texture
+	texture.Bind(1);	
+	
 	shaderPass.init("..\\res\\shaderGeoText.vert", "..\\res\\shaderGeoText.frag", "..\\res\\shaderGeoText.geom");
-
 	shaderPass.Bind();
-	texture.Bind(1);
 
 	setUniform(shaderPass, "time", 2.0f * counter);
 	setUniform(shaderPass, "transform", transform.GetModel());
-	//setUniform(shaderPass, "randColourX", sinf(counter));
-	//setUniform(shaderPass, "randColourY", 1.0f / sinf(counter));
-	//setUniform(shaderPass, "randColourZ", sinf(counter) * sinf(counter));
-	setUniform(shaderPass, "tex", texture.getTexHandler());
 
 	shaderPass.Update(transform, myCamera);
 

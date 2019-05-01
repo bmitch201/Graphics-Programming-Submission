@@ -21,7 +21,7 @@ uniform float time;
 vec4 explode(vec4 position, vec3 normal)
 {
 	//Amout of explosion
-    float magnitude = 8.0;
+    float magnitude = 4.0;
 	//Direction of explosion, going along normal
     vec3 direction = normal * ((sin(time) + 1.0) / 2.0) * magnitude; 
 	//Returning position
@@ -41,13 +41,16 @@ void main()
 {
 //Getting normal
     vec3 normal = GetNormal();
+
 //Setting current vertex position
     gl_Position = explode(gl_in[0].gl_Position, normal);
     TexCoords = gs_in[0].texCoords;
     EmitVertex();
+
     gl_Position = explode(gl_in[1].gl_Position, normal);
     TexCoords = gs_in[1].texCoords;
     EmitVertex();
+
     gl_Position = explode(gl_in[2].gl_Position, normal);
     TexCoords = gs_in[2].texCoords;
     EmitVertex();

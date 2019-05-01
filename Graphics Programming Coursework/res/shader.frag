@@ -35,6 +35,6 @@ vec4 texColor = texture2D( diffuse, TexCoord );
 
 phongModel(Position, Normal, ambAndDiff, spec);
 
-FragColor = vec4(ambAndDiff, 1.0) * texColor + vec4(spec, 1.0);
+FragColor = texColor;//vec4(ambAndDiff, 1.0) * texColor + vec4(spec, 1.0);
 
 }

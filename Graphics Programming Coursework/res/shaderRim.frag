@@ -6,7 +6,10 @@ uniform mat4 u_vm;
 layout( location = 0 ) out vec4 fragcolor;
  
 in vec3 v_norm;
+in vec2 v_coord;
 in vec4 v_pos; 
+
+uniform sampler2D diffuse;
  
 void main() {
  
@@ -16,5 +19,5 @@ void main() {
   float vdn = 1.0 - max(dot(v, n), 0.0);        // the rim contribution
  
   fragcolor.a = 0.6;
-  fragcolor.rgb = vec3(smoothstep(0.4, 0.8, vdn));
+  fragcolor.rgb = vec3((texture(diffuse, v_coord)) * smoothstep(0.4, 0.8, vdn));
 }

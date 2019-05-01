@@ -107,11 +107,11 @@ public:
 	{
 		glUniform4fv(glGetUniformLocation(program, name.c_str()), 1, &value[0]);
 
-		if ((glGetUniformLocation(program, name.c_str()) == -1))
-		{
-			std::cerr << "Unable to load shader: " << name.c_str() << std::endl;
-			__debugbreak();
-		}
+		//if ((glGetUniformLocation(program, name.c_str()) == -1))
+		//{
+		//	std::cerr << "Unable to load shader: " << name.c_str() << std::endl;
+		//	__debugbreak();
+		//}
 	}
 	void setVec4(const std::string &name, float x, float y, float z, float w)
 	{

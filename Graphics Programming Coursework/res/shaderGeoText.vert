@@ -12,14 +12,18 @@ uniform mat4 transform;
 //Passing out the normal and position data
 out vec3 v_norm;
 out vec4 v_pos; 
-out vec2 TexCoord;
+
+out VS_OUT 
+{
+    vec2 texCoords;
+} vs_out;
 
 void main()
 {
 	//Assigning the normal and position data
 	v_norm = VertexNormal;
 	v_pos = vec4(VertexPosition, 1.0);
-	TexCoord = VertexTexCoord;
+	vs_out.texCoords = VertexTexCoord;
 
 	// Sets the position of the current vertex
 	gl_Position = transform * vec4(VertexPosition, 1.0);

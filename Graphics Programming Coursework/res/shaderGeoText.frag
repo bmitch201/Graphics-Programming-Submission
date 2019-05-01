@@ -2,14 +2,16 @@
 #version 400
 
 //Layout Qualifer
-layout( location = 0 ) out vec4 fragcolor;
+layout( location = 0 ) out vec4 FragColor;
 
 //uniform float randColourX;
 //uniform float randColourY;
 //uniform float randColourZ;
 
-in vec3 Position;
-in vec2 TexCoord;
+//in vec3 Position;
+in vec2 TexCoords;
+
+//out vec4 FragColor;
 
 uniform sampler2D tex;
  
@@ -20,5 +22,5 @@ void main()
 	//color = vec4(randColourX,randColourY,randColourZ,1.0);
     //fragcolor = color;
 
-	fragcolor = texture(tex, TexCoord);
+	FragColor = vec4(texture(tex, TexCoords));
 }
