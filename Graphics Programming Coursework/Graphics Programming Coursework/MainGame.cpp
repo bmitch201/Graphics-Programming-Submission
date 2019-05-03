@@ -3,7 +3,6 @@
 #include <iostream>
 #include <string>
 
-
 Transform transform;
 
 MainGame::MainGame()
@@ -15,7 +14,6 @@ MainGame::MainGame()
 	Mesh* mesh3();
 	Audio* audioDevice();
 	Texture* texture(); //load texture
-	Texture* texture1(); //load texture
 	Overlay* overlay(); //load texture
 	Shader* shaderPass();
 }
@@ -33,16 +31,12 @@ void MainGame::run()
 void MainGame::initSystems()
 {
 	_gameDisplay.initDisplay(); 
-	//whistle = audioDevice.loadSound("..\\res\\bang.wav");
-	//backGroundMusic = audioDevice.loadSound("..\\res\\background.wav");
-	//texture.init("..\\res\\bricks.jpg"); //load texture
-	//texture.init("..\\res\\water.jpg"); //load texture
 
 	shaderSkybox.init("..\\res\\shaderSkybox.vert", "..\\res\\shaderSkybox.frag");
 
-	mesh1.loadModel("..\\res\\Hexagon.obj");
+	mesh1.loadModel("..\\res\\cylinder.obj");
 	mesh2.loadModel("..\\res\\pokeball.obj");
-	mesh3.loadModel("..\\res\\plate.obj");
+	mesh3.loadModel("..\\res\\Hexagon.obj");
 	
 	myCamera.initCamera(glm::vec3(0, 0, -10.0), 70.0f, (float)_gameDisplay.getWidth()/_gameDisplay.getHeight(), 0.01f, 1000.0f);
 
@@ -155,6 +149,14 @@ void MainGame::processInput()
 				case SDLK_s://If key 's' down
 					myCamera.MoveForward(-1);
 					break;
+
+				case SDLK_e://If key 'e' down
+					myCamera.RotateY(-0.1f);
+					break;
+
+				case SDLK_q://If key 'q' down
+					myCamera.RotateY(0.1f);
+					break;
 				}
 		}
 	}
@@ -224,7 +226,9 @@ void MainGame::drawGame()
 	//Sets positon of Mesh 1
 	transform.SetPos(glm::vec3(sinf(counter), 0.5, 0.0));
 	transform.SetRot(glm::vec3(1.0, counter * 5, 0.0));
-	transform.SetScale(glm::vec3(0.05, 0.05, 0.05));
+	//transform.SetScale(glm::vec3(0.05, 0.05, 0.05));
+	//transform.SetScale(glm::vec3(0.005, 0.005, 0.005));
+	transform.SetScale(glm::vec3(0.25, 0.25, 0.25));
 
 	shaderPass.init("..\\res\\shaderReflection.vert", "..\\res\\shaderReflection.frag");
 	shaderPass.Bind();
@@ -240,7 +244,9 @@ void MainGame::drawGame()
 
 	transform.SetPos(glm::vec3(-sinf(counter), -2.0, 0.5));
 	transform.SetRot(glm::vec3(counter, counter * 5, counter * 2));
+	//transform.SetScale(glm::vec3(0.05, 0.05, 0.05));
 	transform.SetScale(glm::vec3(0.005, 0.005, 0.005));
+	//transform.SetScale(glm::vec3(0.25, 0.25, 0.25));
 
 	shaderPass.init("..\\res\\shaderGooch.vert", "..\\res\\shaderGooch.frag");		
 	shaderPass.Bind();
@@ -249,7 +255,7 @@ void MainGame::drawGame()
 	setUniform(shaderPass, "Projection", myCamera.GetProjection());
 	setUniform(shaderPass, "ModelViewMatrix", myCamera.GetView() * transform.GetModel());
 	setUniform(shaderPass, "NormalMatrix", glm::mat3(glm::transpose(glm::inverse(transform.GetModel()))));
-	setUniform(shaderPass, "lightPos", myCamera.getPos());
+	setUniform(shaderPass, "lightPos", glm::vec3(-7.0, 0.5, 0.0));
 
 	shaderPass.Update(transform, myCamera);
 
@@ -257,7 +263,9 @@ void MainGame::drawGame()
 
 	transform.SetPos(glm::vec3(2.0, -sinf(counter), -sinf(counter)));
 	transform.SetRot(glm::vec3(1.0, counter * 5, 0.0));
-	transform.SetScale(glm::vec3(0.01, 0.01, 0.01));
+	transform.SetScale(glm::vec3(0.05, 0.05, 0.05));
+	//transform.SetScale(glm::vec3(0.005, 0.005, 0.005));
+	//transform.SetScale(glm::vec3(0.25, 0.25, 0.25));
 
 	texture.init("..\\res\\iron.jpg"); //load texture
 	texture.Bind(1);	
@@ -265,7 +273,7 @@ void MainGame::drawGame()
 	shaderPass.init("..\\res\\shaderGeoText.vert", "..\\res\\shaderGeoText.frag", "..\\res\\shaderGeoText.geom");
 	shaderPass.Bind();
 
-	setUniform(shaderPass, "time", 2.0f * counter);
+	setUniform(shaderPass, "time", 5.0f * counter);
 	setUniform(shaderPass, "transform", transform.GetModel());
 
 	shaderPass.Update(transform, myCamera);

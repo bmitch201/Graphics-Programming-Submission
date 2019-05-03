@@ -15,7 +15,7 @@ out vec3 ViewVec;
 
 void main()
 {
-	vec3 Pos = (vec3(ModelViewMatrix) * VertexPosition);	
+	vec3 Pos = (vec3(Projection * ModelViewMatrix) * VertexPosition);	
 	vec3 Normal = normalize(NormalMatrix * VertexNormal);
 	vec3 light = normalize(lightPos - Pos);
 	ViewVec = normalize(-Pos);	

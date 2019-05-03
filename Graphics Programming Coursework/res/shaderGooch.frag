@@ -10,11 +10,11 @@ out vec4 FragColor;
 
 void main()
 {
-	float DiffCool = 0.5;
-	float DiffWarm = 0.8;
-	vec3 Cool = vec3(0.0, 0.0, 0.0);
-	vec3 Warm = vec3(0.6, 0.0, 1.0);
-	vec3 color = vec3(0.3, 1.0, 0.1);
+	float DiffCool = 0.3;
+	float DiffWarm = 0.3;
+	vec3 Cool = vec3(0.7, 0.2, 0.0);
+	vec3 Warm = vec3(0.0, 1.0, 0.0);
+	vec3 color = vec3(0.0, 0.0, 1.0);
 
 	vec3 kcool = min(Cool + DiffCool * color, 1.0);
 	vec3 kwarm = min(Warm + DiffWarm * color, 1.0);

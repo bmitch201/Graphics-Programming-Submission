@@ -26,7 +26,6 @@ private:
 	void gameLoop();
 	void drawGame();
 	void playAudio(unsigned int Source, glm::vec3 pos);
-	void blobEffect();
 
 	void Skybox();
 
@@ -40,14 +39,12 @@ private:
 	Mesh mesh3;
 
 	Texture texture;
-	Texture texture1;
 	Texture skybox;
 
 	Overlay overlay;
 	Shader shaderPass;
 	Shader shaderSkybox;
 
-	void setUniform(Shader currentShader, const char *name, float x, float y, float z);
 	void setUniform(Shader currentShader, const char *name, const glm::vec3 & v);
 	void setUniform(Shader currentShader, const char *name, const glm::mat4 & m);
 	void setUniform(Shader currentShader, const char *name, const glm::mat3 & m);
