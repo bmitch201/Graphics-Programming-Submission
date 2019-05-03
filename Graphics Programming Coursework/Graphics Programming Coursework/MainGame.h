@@ -6,8 +6,6 @@
 #include "Mesh.h"
 #include "Texture.h"
 #include "transform.h"
-#include "Audio.h"
-#include "Overlay.h"
 
 enum class GameState{PLAY, EXIT};
 
@@ -25,7 +23,6 @@ private:
 	void processInput();
 	void gameLoop();
 	void drawGame();
-	void playAudio(unsigned int Source, glm::vec3 pos);
 
 	void Skybox();
 
@@ -41,7 +38,6 @@ private:
 	Texture texture;
 	Texture skybox;
 
-	Overlay overlay;
 	Shader shaderPass;
 	Shader shaderSkybox;
 
@@ -54,7 +50,6 @@ private:
 	glm::mat4 modelView;
 
 	Camera myCamera;
-	Audio audioDevice;
 
 	float counter;
 	unsigned int whistle;

@@ -78,7 +78,6 @@ void Shader::Update(const Transform& transform, const Camera& camera)
 	glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GLU_FALSE, &mvp[0][0]);
 }
 
-
 GLuint Shader::CreateShader(const std::string& text, unsigned int type)
 {
 	GLuint shader = glCreateShader(type); //create shader based on specified type

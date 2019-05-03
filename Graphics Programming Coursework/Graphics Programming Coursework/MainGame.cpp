@@ -12,9 +12,7 @@ MainGame::MainGame()
     Mesh* mesh1();
 	Mesh* mesh2();
 	Mesh* mesh3();
-	Audio* audioDevice();
 	Texture* texture(); //load texture
-	Overlay* overlay(); //load texture
 	Shader* shaderPass();
 }
 
@@ -34,9 +32,9 @@ void MainGame::initSystems()
 
 	shaderSkybox.init("..\\res\\shaderSkybox.vert", "..\\res\\shaderSkybox.frag");
 
-	mesh1.loadModel("..\\res\\cylinder.obj");
+	mesh1.loadModel("..\\res\\Hexagon.obj");
 	mesh2.loadModel("..\\res\\pokeball.obj");
-	mesh3.loadModel("..\\res\\Hexagon.obj");
+	mesh3.loadModel("..\\res\\cylinder.obj");
 	
 	myCamera.initCamera(glm::vec3(0, 0, -10.0), 70.0f, (float)_gameDisplay.getWidth()/_gameDisplay.getHeight(), 0.01f, 1000.0f);
 
@@ -115,7 +113,6 @@ void MainGame::gameLoop()
 	{
 		processInput();
 		drawGame();
-		playAudio(backGroundMusic, glm::vec3(0.0f,0.0f,0.0f));
 	}
 }
 
@@ -160,7 +157,6 @@ void MainGame::processInput()
 				}
 		}
 	}
-	
 }
 
 void MainGame::Skybox()
@@ -178,18 +174,6 @@ void MainGame::Skybox()
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 	glDepthFunc(GL_LESS); // set depth function back to default
-}
-
-void MainGame::playAudio(unsigned int Source, glm::vec3 pos)
-{
-	
-	ALint state; 
-	alGetSourcei(Source, AL_SOURCE_STATE, &state);
-
-	if (AL_PLAYING != state)
-	{
-		//audioDevice.playSound(Source, pos);
-	}
 }
 
 void MainGame::setUniform(Shader currentShader, const char * name, const glm::mat4 & m)
@@ -226,9 +210,9 @@ void MainGame::drawGame()
 	//Sets positon of Mesh 1
 	transform.SetPos(glm::vec3(sinf(counter), 0.5, 0.0));
 	transform.SetRot(glm::vec3(1.0, counter * 5, 0.0));
-	//transform.SetScale(glm::vec3(0.05, 0.05, 0.05));
+	transform.SetScale(glm::vec3(0.05, 0.05, 0.05));
 	//transform.SetScale(glm::vec3(0.005, 0.005, 0.005));
-	transform.SetScale(glm::vec3(0.25, 0.25, 0.25));
+	//transform.SetScale(glm::vec3(0.25, 0.25, 0.25));
 
 	shaderPass.init("..\\res\\shaderReflection.vert", "..\\res\\shaderReflection.frag");
 	shaderPass.Bind();
@@ -251,7 +235,6 @@ void MainGame::drawGame()
 	shaderPass.init("..\\res\\shaderGooch.vert", "..\\res\\shaderGooch.frag");		
 	shaderPass.Bind();
 	
-	setUniform(shaderPass, "Model", transform.GetModel());
 	setUniform(shaderPass, "Projection", myCamera.GetProjection());
 	setUniform(shaderPass, "ModelViewMatrix", myCamera.GetView() * transform.GetModel());
 	setUniform(shaderPass, "NormalMatrix", glm::mat3(glm::transpose(glm::inverse(transform.GetModel()))));
@@ -263,9 +246,9 @@ void MainGame::drawGame()
 
 	transform.SetPos(glm::vec3(2.0, -sinf(counter), -sinf(counter)));
 	transform.SetRot(glm::vec3(1.0, counter * 5, 0.0));
-	transform.SetScale(glm::vec3(0.05, 0.05, 0.05));
+	//transform.SetScale(glm::vec3(0.05, 0.05, 0.05));
 	//transform.SetScale(glm::vec3(0.005, 0.005, 0.005));
-	//transform.SetScale(glm::vec3(0.25, 0.25, 0.25));
+	transform.SetScale(glm::vec3(0.25, 0.25, 0.25));
 
 	texture.init("..\\res\\iron.jpg"); //load texture
 	texture.Bind(1);	
