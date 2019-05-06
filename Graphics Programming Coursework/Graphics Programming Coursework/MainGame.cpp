@@ -185,7 +185,6 @@ void MainGame::setUniform(Shader currentShader, const char * name, const glm::ma
 	currentShader.setMat3(name, m);
 }
 
-
 void MainGame::setUniform(Shader currentShader, const char * name, float val)
 {
 	currentShader.setFloat(name, val);
@@ -205,62 +204,64 @@ void MainGame::drawGame()
 {
 	_gameDisplay.clearDisplay(0.0f, 0.0f, 0.0f, 1.0f);
 
+	//Sets up the skybox 
 	Skybox();
 
-	//Sets positon of Mesh 1
+	//Sets the Positon, Rotation and Scale of Mesh 1
 	transform.SetPos(glm::vec3(sinf(counter), 0.5, 0.0));
 	transform.SetRot(glm::vec3(1.0, counter * 5, 0.0));
-	transform.SetScale(glm::vec3(0.05, 0.05, 0.05));
-	//transform.SetScale(glm::vec3(0.005, 0.005, 0.005));
-	//transform.SetScale(glm::vec3(0.25, 0.25, 0.25));
+	transform.SetScale(glm::vec3(0.05, 0.05, 0.05)); //Hexagon Model
+	//transform.SetScale(glm::vec3(0.005, 0.005, 0.005)); //Pokeball model
+	//transform.SetScale(glm::vec3(0.25, 0.25, 0.25)); //Cylinder model
 
-	shaderPass.init("..\\res\\shaderReflection.vert", "..\\res\\shaderReflection.frag");
-	shaderPass.Bind();
+	shaderPass.init("..\\res\\shaderReflection.vert", "..\\res\\shaderReflection.frag"); //Initalises the Reflection shader
+	shaderPass.Bind(); //Binds the initalised shader
 
-	setUniform(shaderPass, "model", transform.GetModel());
-	setUniform(shaderPass, "view", myCamera.GetView());
-	setUniform(shaderPass, "projection", myCamera.GetProjection());
-	setUniform(shaderPass, "cameraPos", (myCamera.getPos()));
+	setUniform(shaderPass, "model", transform.GetModel()); //Passes in the transform matrix
+	setUniform(shaderPass, "view", myCamera.GetView()); //Passes in the view matrix
+	setUniform(shaderPass, "projection", myCamera.GetProjection()); //Passes in the projection matrix
+	setUniform(shaderPass, "cameraPos", (myCamera.getPos())); //Passes in the camera postion
 
-	shaderPass.Update(transform, myCamera);
-
+	//Draws mesh 1
 	mesh1.draw();
 
+	//Sets the Positon, Rotation and Scale of Mesh 2
 	transform.SetPos(glm::vec3(-sinf(counter), -2.0, 0.5));
 	transform.SetRot(glm::vec3(counter, counter * 5, counter * 2));
-	//transform.SetScale(glm::vec3(0.05, 0.05, 0.05));
-	transform.SetScale(glm::vec3(0.005, 0.005, 0.005));
-	//transform.SetScale(glm::vec3(0.25, 0.25, 0.25));
+	//transform.SetScale(glm::vec3(0.05, 0.05, 0.05)); //Hexagon Model
+	transform.SetScale(glm::vec3(0.005, 0.005, 0.005)); //Pokeball model
+	//transform.SetScale(glm::vec3(0.25, 0.25, 0.25)); //Cylinder model
 
-	shaderPass.init("..\\res\\shaderGooch.vert", "..\\res\\shaderGooch.frag");		
-	shaderPass.Bind();
+	shaderPass.init("..\\res\\shaderGooch.vert", "..\\res\\shaderGooch.frag"); //Initalises the Gooch shader	
+	shaderPass.Bind(); //Binds the initalised shader
 	
-	setUniform(shaderPass, "Projection", myCamera.GetProjection());
-	setUniform(shaderPass, "ModelViewMatrix", myCamera.GetView() * transform.GetModel());
-	setUniform(shaderPass, "NormalMatrix", glm::mat3(glm::transpose(glm::inverse(transform.GetModel()))));
-	setUniform(shaderPass, "lightPos", glm::vec3(-7.0, 0.5, 0.0));
+	setUniform(shaderPass, "Projection", myCamera.GetProjection()); //Passes in the projection matrix
+	setUniform(shaderPass, "ModelViewMatrix", myCamera.GetView() * transform.GetModel()); //Passes in the model view matrix
+	setUniform(shaderPass, "NormalMatrix", glm::mat3(glm::transpose(glm::inverse(transform.GetModel())))); //Passes in the Nonral matrix
+	setUniform(shaderPass, "lightPos", glm::vec3(-7.0, 0.5, 0.0)); //Passes in a position for the light
 
-	shaderPass.Update(transform, myCamera);
-
+	//Draws mesh 2
 	mesh2.draw();
 
+	//Sets the Positon, Rotation and Scale of Mesh 3
 	transform.SetPos(glm::vec3(2.0, -sinf(counter), -sinf(counter)));
 	transform.SetRot(glm::vec3(1.0, counter * 5, 0.0));
-	//transform.SetScale(glm::vec3(0.05, 0.05, 0.05));
-	//transform.SetScale(glm::vec3(0.005, 0.005, 0.005));
-	transform.SetScale(glm::vec3(0.25, 0.25, 0.25));
+	//transform.SetScale(glm::vec3(0.05, 0.05, 0.05)); //Hexagon Model
+	//transform.SetScale(glm::vec3(0.005, 0.005, 0.005)); //Pokeball model
+	transform.SetScale(glm::vec3(0.25, 0.25, 0.25)); //Cylinder model
 
 	texture.init("..\\res\\iron.jpg"); //load texture
-	texture.Bind(1);	
+	texture.Bind(1); //bind the texture
 	
-	shaderPass.init("..\\res\\shaderGeoText.vert", "..\\res\\shaderGeoText.frag", "..\\res\\shaderGeoText.geom");
-	shaderPass.Bind();
+	shaderPass.init("..\\res\\shaderGeoText.vert", "..\\res\\shaderGeoText.frag", "..\\res\\shaderGeoText.geom"); //Initalises the Geometry shader
+	shaderPass.Bind(); //Binds the initalised shader
+	 
+	setUniform(shaderPass, "time", 5.0f * counter); //Passes in a time affected by the counter
+	setUniform(shaderPass, "transform", transform.GetModel()); //Passes in the transform matrix
 
-	setUniform(shaderPass, "time", 5.0f * counter);
-	setUniform(shaderPass, "transform", transform.GetModel());
+	shaderPass.Update(transform, myCamera); //Makes use of the Update function within the shader to pass throught the ModelViewProjection Matrix to the shader program
 
-	shaderPass.Update(transform, myCamera);
-
+	//Draws mesh 3
 	mesh3.draw();
 
 	counter = counter + 0.01f;
