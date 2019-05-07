@@ -14,12 +14,12 @@ out vec3 ViewVec;
 
 void main()
 {
-	vec3 Pos = (vec3(Projection * ModelViewMatrix) * VertexPosition);	
-	vec3 Normal = normalize(NormalMatrix * VertexNormal);
-	vec3 light = normalize(lightPos - Pos);
-	ViewVec = normalize(-Pos);	
-	ReflectVec = normalize(reflect(-light, Normal));
-	NormDot = (dot(light, Normal) + 1.0) * 0.5;
+	vec3 Pos = (vec3(Projection * ModelViewMatrix) * VertexPosition); //Gets the vertex position as a Vector3
+	vec3 Normal = normalize(NormalMatrix * VertexNormal); //Gets the VertexNormal in relation to the Normal Matrix
+	vec3 light = normalize(lightPos - Pos); //Grabs the light in terms of its position from the vertex
+	ViewVec = normalize(-Pos); //View Vector 
+	ReflectVec = normalize(reflect(-light, Normal)); //Reflection Vector
+	NormDot = (dot(light, Normal) + 1.0) * 0.5; //The weighting value of the light on the shader
 
-	gl_Position = (Projection * ModelViewMatrix) * vec4(VertexPosition,1.0);
+	gl_Position = (Projection * ModelViewMatrix) * vec4(VertexPosition,1.0); //Sets the vertex position as a Vector4
 }
